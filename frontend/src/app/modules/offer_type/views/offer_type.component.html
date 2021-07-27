@@ -35,7 +35,7 @@
 
       <br/>
 
-      <div class="added_item" *ngFor="let offer of offer_types | async | filter : search_term.value | sortBy: 'asc':'title' | sortBy: 'asc':'base'">
+      <div class="added_item" *ngFor="let offer of offer_types | async | filter : search_term.value">
         
         <div>
           <b>{{offer.title}}</b>
@@ -272,7 +272,7 @@
         <mat-form-field class="example-full-width">
           <mat-label>Parent</mat-label>
           <mat-select [(ngModel)]="offer_type.parent">
-            <mat-option *ngFor="let offer of offer_types | async | sortBy: 'asc':'title'" [value]="offer.title">
+            <mat-option *ngFor="let offer of offer_types | async" [value]="offer.title">
               {{offer.title}}
             </mat-option>
           </mat-select>

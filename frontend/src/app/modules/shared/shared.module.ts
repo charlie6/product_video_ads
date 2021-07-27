@@ -32,7 +32,6 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatCardModule} from '@angular/material/card';
 import {MatExpansionModule} from '@angular/material/expansion'
 import {DragDropModule} from '@angular/cdk/drag-drop';
-import { NgpSortModule } from "ngp-sort-pipe";
 
 import { DraggableElementComponent } from './draggable_element/draggable_element.component';
 import { EditElementBoxComponent } from './edit_element_box/edit_element_box.component'
@@ -76,7 +75,6 @@ import { EditElementBoxComponent } from './edit_element_box/edit_element_box.com
     MatCardModule,
     MatExpansionModule,
     DragDropModule,
-    NgpSortModule,
     DraggableElementComponent,
     EditElementBoxComponent
   ]

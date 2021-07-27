@@ -34,7 +34,16 @@ from video_generator.video.video_generator import VideoGenerator as VideoGenerat
 from video_generator.video.video_processor import VideoProcessor as VideoProcessor
 
 logger = video_generator.log.getLogger()
-app = flask.Flask(__name__)
+app = flask.Flask("Product Video Ads")
+static_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+
+@app.route('/', methods=['GET'])
+def index():
+    return flask.send_from_directory(static_path, 'index.html')
+
+@app.route('/<path:path>', methods=['GET'])
+def static_proxy(path):
+    return flask.send_from_directory(static_path, path)
 
 @app.route('/generate_video')
 def generate_video():
