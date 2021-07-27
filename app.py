@@ -35,15 +35,19 @@ from video_generator.video.video_processor import VideoProcessor as VideoProcess
 
 logger = video_generator.log.getLogger()
 app = flask.Flask("Product Video Ads")
-static_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+static_path = os.path.join(os.path.dirname(
+    os.path.abspath(__file__)), "static")
+
 
 @app.route('/', methods=['GET'])
+@app.route('/login', methods=['GET'])
+@app.route('/products', methods=['GET'])
+@app.route('/bases', methods=['GET'])
+@app.route('/offer_types', methods=['GET'])
+@app.route('/generate', methods=['GET'])
 def index():
     return flask.send_from_directory(static_path, 'index.html')
 
-@app.route('/<path:path>', methods=['GET'])
-def static_proxy(path):
-    return flask.send_from_directory(static_path, path)
 
 @app.route('/generate_video')
 def generate_video():
@@ -51,7 +55,7 @@ def generate_video():
     #spreadsheet_id = os.environ.get('SPREADSHEET_ID')
     #bucket_name = os.environ.get('BUCKET_NAME')
 
-    #if spreadsheet_id is None or bucket_name is None:
+    # if spreadsheet_id is None or bucket_name is None:
     #    print('Please set environment variable SPREADSHEET_ID and BUCKET_NAME')
     #    exit(1)
 
@@ -59,14 +63,14 @@ def generate_video():
     #credentials = None
 
     # Tries to retrieve token from storage each 5 minutes
-    #while True:
+    # while True:
     #    credentials = authenticator.authenticate()
 
     #    if credentials is not None:
     #        break
 
-     #   logger.info('Sleeping for 5 minutes before trying again...')
-     #   time.sleep(5 * 60)
+    #   logger.info('Sleeping for 5 minutes before trying again...')
+    #   time.sleep(5 * 60)
 
     # Starts processing only after token authenticated!
     logger.info('[v2] Started processing...')
@@ -78,36 +82,41 @@ def generate_video():
     #video_processor = VideoProcessor(storage, VideoGenerator(), Uploader(credentials), cloud_storage)
     #image_processor = ImageProcessor(storage, ImageGenerator(), cloud_storage)
 
-    VideoGenerator().process_video([],[],'test.mp4', 'output.mp4')
+    VideoGenerator().process_video([], [], 'test.mp4', 'output.mp4')
 
     # Handler acts as facade
     #handler = EventHandler(configuration, video_processor, image_processor)
 
-    #while True:
+    # while True:
 
-        #try:
+    # try:
 
-            # Sync drive files to local tmp
-        #    storage.update_local_files()
+    # Sync drive files to local tmp
+    #    storage.update_local_files()
 
-            # Process configuration joining threads
-        #    handler.handle_configuration()
+    # Process configuration joining threads
+    #    handler.handle_configuration()
 
-        #except Exception as e:
-        #    logger.error(e)
+    # except Exception as e:
+    #    logger.error(e)
 
-        # Sleep!
-        #interval = configuration.get_interval_in_minutes()
-        #logger.info('Sleeping for %s minutes', interval)
-        #time.sleep(int(interval) * 60)
+    # Sleep!
+    #interval = configuration.get_interval_in_minutes()
+    #logger.info('Sleeping for %s minutes', interval)
+    #time.sleep(int(interval) * 60)
+
+
+@app.route('/<path:path>', methods=['GET'])
+def static_proxy(path):
+    return flask.send_from_directory(static_path, path)
 
 
 if __name__ == '__main__':
-  # When running locally, disable OAuthlib's HTTPs verification.
-  # ACTION ITEM for developers:
-  #     When running in production *do not* leave this option enabled.
-  os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+    # When running locally, disable OAuthlib's HTTPs verification.
+    # ACTION ITEM for developers:
+    #     When running in production *do not* leave this option enabled.
+    #os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
-  # Specify a hostname and port that are set as a valid redirect URI
-  # for your API project in the Google API Console.
-  app.run('localhost', 8080, debug=True)
+    # Specify a hostname and port that are set as a valid redirect URI
+    # for your API project in the Google API Console.
+    app.run('localhost', 8080, debug=True)
