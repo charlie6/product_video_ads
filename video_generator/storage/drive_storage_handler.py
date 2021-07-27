@@ -22,7 +22,7 @@ from apiclient.http import MediaFileUpload
 from apiclient.http import MediaIoBaseDownload
 from googleapiclient.discovery import build
 
-import log
+import video_generator.log
 
 
 class DriveStorageHandler():
@@ -34,7 +34,7 @@ class DriveStorageHandler():
   PREVIEW_FOLDER = 'preview'
   PREVIEW_FOLDER_ID = None
 
-  logger = log.getLogger()
+  logger = video_generator.log.getLogger()
 
   def __init__(self, drive_folder, credentials):
 

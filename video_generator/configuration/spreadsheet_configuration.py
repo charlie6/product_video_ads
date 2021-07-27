@@ -17,8 +17,8 @@ import json
 
 from googleapiclient.discovery import build
 
-import log
-from log.SpreadsheetHandler import SpreadsheetHandler
+import video_generator.log
+from video_generator.log.SpreadsheetHandler import SpreadsheetHandler
 
 
 class SpreadsheetConfiguration(object):
@@ -33,7 +33,7 @@ class SpreadsheetConfiguration(object):
     DRIVE_CONFIG_RANGE = 'Configuration!C6'
     INTERVAL_IN_MINUTES_RANGE = 'Configuration!C7'
 
-    logger = log.getLogger()
+    logger = video_generator.log.getLogger()
 
     def __init__(self, spreadsheet_id, credentials):
 

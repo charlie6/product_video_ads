@@ -15,7 +15,7 @@
 import google.auth
 from google.cloud import storage
 
-import log
+import video_generator.log
 
 API_SCOPES = [
     'https://www.googleapis.com/auth/devstorage.read_write'
@@ -23,7 +23,7 @@ API_SCOPES = [
 
 
 class CloudStorageHandler():
-    logger = log.getLogger()
+    logger = video_generator.log.getLogger()
 
     def __init__(self, credentials=None):
         if credentials is None:

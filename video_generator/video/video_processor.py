@@ -17,10 +17,10 @@
 import traceback
 from datetime import datetime
 
-import log
-from ffmpeg import util
+import video_generator.log
+from video_generator.ffmpeg import util
 
-logger = log.getLogger()
+logger = video_generator.log.getLogger()
 
 
 class VideoProcessor():

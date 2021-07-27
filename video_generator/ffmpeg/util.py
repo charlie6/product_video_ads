@@ -24,9 +24,9 @@ import shutil
 
 import requests
 
-import log
+import video_generator.log
 
-logger = log.getLogger()
+logger = video_generator.log.getLogger()
 
 
 def convert_configs_to_format(configs, products_data, storage, cloud_storage):

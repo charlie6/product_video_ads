@@ -14,9 +14,9 @@
 
 """Handle processing of rows from storage."""
 
-import log
+import video_generator.log
 
-logger = log.getLogger()
+logger = video_generator.log.getLogger()
 
 
 class EventHandler:

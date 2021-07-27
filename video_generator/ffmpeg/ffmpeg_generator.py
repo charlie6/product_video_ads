@@ -25,13 +25,13 @@ import re
 import subprocess
 import tempfile
 
-import log
+import video_generator.log
 
 
 class FFMPEGGenerator(object):
     """Vogon video-handling class, which actually turns inputs into videos."""
 
-    logger = log.getLogger()
+    logger = video_generator.log.getLogger()
 
     def __init__(self):
 

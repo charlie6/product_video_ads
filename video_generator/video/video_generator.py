@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import log
-from ffmpeg.ffmpeg_generator import FFMPEGGenerator
+import video_generator.log
+from video_generator.ffmpeg.ffmpeg_generator import FFMPEGGenerator
 
 
 class VideoGenerator(FFMPEGGenerator):
     """Video-handling class, which actually turns inputs into videos."""
 
-    logger = log.getLogger()
+    logger = video_generator.log.getLogger()
 
     def process_video(self, image_or_videos_overlays, text_overlays, input_video,
                       output_video):

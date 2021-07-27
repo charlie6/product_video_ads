@@ -21,7 +21,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 
-import log
+import video_generator.log
 
 # Explicitly tell the underlying HTTP transport library not to retry, since
 # we are handling retry logic ourselves.
@@ -42,7 +42,7 @@ RETRIABLE_STATUS_CODES = [500, 502, 503, 504]
 
 
 class YoutubeUploader():
-    logger = log.getLogger()
+    logger = video_generator.log.getLogger()
 
     def __init__(self, credentials):
         self.youtube = build('youtube', 'v3', credentials=credentials,

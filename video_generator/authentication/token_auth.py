@@ -14,13 +14,13 @@
 
 import pickle
 
-import log
+import video_generator.log
 
 
 class TokenAuth:
     FILE = 'token'
 
-    logger = log.getLogger()
+    logger = video_generator.log.getLogger()
 
     def __init__(self, bucket_name, storage_client):
         self.bucket_name = bucket_name
