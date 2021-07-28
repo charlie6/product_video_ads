@@ -33,4 +33,4 @@ RUN cp -r /usr/src/frontend/dist /usr/src/app/static
 # Install app
 WORKDIR /usr/src/app
 
-ENTRYPOINT ["flask", "run", "--host=0.0.0.0"]
+ENTRYPOINT ["gunicorn", "--bind=0.0.0.0:5000", "--workers=1", "--threads=8", "app:app"]
