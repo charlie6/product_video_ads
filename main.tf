@@ -145,12 +145,18 @@ resource "google_project_iam_member" "run-invoker-sa" {
   member  = "serviceAccount:${google_service_account.sa.email}"
 }
 
+resource "google_project_iam_member" "scheduler-sa" {
+  project = data.google_client_config.current.project
+  role    = "roles/cloudscheduler.admin"
+  member  = "serviceAccount:${google_service_account.sa.email}"
+}
+
 resource "google_cloud_scheduler_job" "generate_video_job" {
   depends_on       = [google_project_service.enable_cloudscheduler_api, google_project_iam_member.run-invoker-sa]
   name             = "pva_job"
   description      = "Product Video Ads Generator"
   schedule         = "0 * * * *"
-  time_zone        = local.time_zone
+  time_zone        = "America/Sao_Paulo"
   attempt_deadline = "320s"
   region           = "us-central1"
 
@@ -158,9 +164,8 @@ resource "google_cloud_scheduler_job" "generate_video_job" {
     http_method = "POST"
     uri         = "${google_cloud_run_service.product_video_ads_service.status[0].url}/generate_video"
     body        = base64encode("spreadsheet_id=${var.spreadsheet_id}")
-    oauth_token {
-      service_account_email = google_service_account.sa.email
-      scope = "https://www.googleapis.com/auth/compute"
+    headers = {
+        "Content-Type" = "application/x-www-form-urlencoded"
     }
   }
 }
