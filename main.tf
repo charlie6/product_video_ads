@@ -1,17 +1,26 @@
 variable "client_id" {
   type = string
+  description = "OAuth2 Client Id."
 }
 
 variable "client_secret" {
   type = string
+  description = "OAuth2 Client Secret."
 }
 
 variable "access_token" {
   type = string
+  description = "OAuth2 Access Token."
 }
 
 variable "refresh_token" {
   type = string
+  description = "OAuth2 Refresh Token."
+}
+
+variable "spreadsheet_id" {
+  type = string
+  description = "Id for configuration spreadsheet."
 }
 
 data "google_client_config" "current" {
@@ -40,6 +49,13 @@ resource "google_project_service" "enable_cloud_run_api" {
 resource "google_project_service" "enable_google_drive_api" {
   project = data.google_client_config.current.project
   service = "drive.googleapis.com"
+  disable_dependent_services = true
+  disable_on_destroy = false
+}
+
+resource "google_project_service" "enable_cloudscheduler_api" {
+  project = data.google_client_config.current.project
+  service = "cloudscheduler.googleapis.com"
   disable_dependent_services = true
   disable_on_destroy = false
 }
@@ -116,6 +132,37 @@ resource "google_cloud_run_service_iam_policy" "noauth" {
   service     = google_cloud_run_service.product_video_ads_service.name
 
   policy_data = data.google_iam_policy.noauth.policy_data
+}
+
+resource "google_service_account" "sa" {
+  account_id   = "pva-runner"
+  display_name = "Service Account for Product Video Ads use"
+}
+
+resource "google_project_iam_member" "run-invoker-sa" {
+  project = data.google_client_config.current.project
+  role    = "roles/run.invoker"
+  member  = "serviceAccount:${google_service_account.sa.email}"
+}
+
+resource "google_cloud_scheduler_job" "generate_video_job" {
+  depends_on       = [google_project_service.enable_cloudscheduler_api, google_project_iam_member.run-invoker-sa]
+  name             = "pva_job"
+  description      = "Product Video Ads Generator"
+  schedule         = "0 * * * *"
+  time_zone        = local.time_zone
+  attempt_deadline = "320s"
+  region           = "us-central1"
+
+  http_target {
+    http_method = "POST"
+    uri         = "${google_cloud_run_service.product_video_ads_service.status[0].url}/generate_video"
+    body        = base64encode("spreadsheet_id=${var.spreadsheet_id}")
+    oauth_token {
+      service_account_email = google_service_account.sa.email
+      scope = "https://www.googleapis.com/auth/compute"
+    }
+  }
 }
 
 output "url" {
