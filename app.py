@@ -15,8 +15,9 @@
 """Application entrypoint."""
 
 import os
-import time
 import flask
+
+from google.oauth2.credentials import Credentials
 
 import video_generator.log
 from video_generator.authentication.token_auth import TokenAuth
@@ -33,10 +34,20 @@ from video_generator.video.video_generator import VideoGenerator as VideoGenerat
 # Handles video processing
 from video_generator.video.video_processor import VideoProcessor as VideoProcessor
 
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
+          'https://www.googleapis.com/auth/youtube.upload',
+          'https://www.googleapis.com/auth/drive',
+          'https://www.googleapis.com/auth/devstorage.read_write']
+
 logger = video_generator.log.getLogger()
 app = flask.Flask("Product Video Ads")
 static_path = os.path.join(os.path.dirname(
     os.path.abspath(__file__)), "static")
+client_id = os.environ.get('CLIENT_ID')
+client_secret = os.environ.get('CLIENT_SECRET')
+access_token = os.environ.get('ACCESS_TOKEN')
+refresh_token = os.environ.get('REFRESH_TOKEN')
+gcp_project = os.environ.get('GCP_PROJECT')
 
 
 @app.route('/', methods=['GET'])
@@ -49,61 +60,62 @@ def index():
     return flask.send_from_directory(static_path, 'index.html')
 
 
-@app.route('/generate_video')
+@app.route('/generate_video', methods=['POST'])
 def generate_video():
+    credentials = None
+    if (client_id == None or client_secret == None):
+        return {"error": "Server was not configured properly, OAuth2 Client id/secret pair missing."}, 503
+
     # Read environment parameters
-    #spreadsheet_id = os.environ.get('SPREADSHEET_ID')
-    #bucket_name = os.environ.get('BUCKET_NAME')
+    spreadsheet_id = flask.request.form['spreadsheet_id']
+    if (spreadsheet_id == None):
+        return {"error": "Please provide the parameter 'spreadsheet_id' in the body of the request."}, 400
 
-    # if spreadsheet_id is None or bucket_name is None:
-    #    print('Please set environment variable SPREADSHEET_ID and BUCKET_NAME')
-    #    exit(1)
+    # Reads token from Auth Header
+    auth_header = flask.request.headers.get('Authorization')
+    if auth_header:
+        auth_token = auth_header.split(" ")[1]
+        credentials = Credentials(
+            token=auth_token,
+            client_id=client_id,
+            client_secret=client_secret,
+            token_uri='https://accounts.google.com/o/oauth2/token',
+            scopes=SCOPES)
 
-    #authenticator = TokenAuth(bucket_name, CloudStorageHandler())
-    #credentials = None
+    # If no auth was found, try from env vars
+    if (credentials == None and access_token != None and refresh_token != None):
+        credentials = Credentials(
+            token=access_token,
+            refresh_token=refresh_token,
+            client_id=client_id,
+            client_secret=client_secret,
+            token_uri='https://accounts.google.com/o/oauth2/token',
+            scopes=SCOPES)
 
-    # Tries to retrieve token from storage each 5 minutes
-    # while True:
-    #    credentials = authenticator.authenticate()
+    if (credentials == None):
+        return {"error": "No access token found. Either use Authorization header or set up env vars" }, 400
 
-    #    if credentials is not None:
-    #        break
-
-    #   logger.info('Sleeping for 5 minutes before trying again...')
-    #   time.sleep(5 * 60)
-
-    # Starts processing only after token authenticated!
-    logger.info('[v2] Started processing...')
 
     # Dependencies
-    #configuration = Configuration(spreadsheet_id, credentials)
-    #storage = StorageHandler(configuration.get_drive_folder(), credentials)
-    #cloud_storage = CloudStorageHandler(credentials)
-    #video_processor = VideoProcessor(storage, VideoGenerator(), Uploader(credentials), cloud_storage)
-    #image_processor = ImageProcessor(storage, ImageGenerator(), cloud_storage)
-
-    VideoGenerator().process_video([], [], 'test.mp4', 'output.mp4')
+    configuration = Configuration(spreadsheet_id, credentials)
+    storage = StorageHandler(configuration.get_drive_folder(), credentials)
+    cloud_storage = CloudStorageHandler(gcp_project, credentials)
+    video_processor = VideoProcessor(
+        storage, VideoGenerator(), Uploader(credentials), cloud_storage)
+    image_processor = ImageProcessor(storage, ImageGenerator(), cloud_storage)
 
     # Handler acts as facade
-    #handler = EventHandler(configuration, video_processor, image_processor)
+    handler = EventHandler(configuration, video_processor, image_processor)
 
-    # while True:
-
-    # try:
-
-    # Sync drive files to local tmp
-    #    storage.update_local_files()
-
-    # Process configuration joining threads
-    #    handler.handle_configuration()
-
-    # except Exception as e:
-    #    logger.error(e)
-
-    # Sleep!
-    #interval = configuration.get_interval_in_minutes()
-    #logger.info('Sleeping for %s minutes', interval)
-    #time.sleep(int(interval) * 60)
+    try:
+        # Sync drive files to local tmp
+        storage.update_local_files()
+        # Process configuration joining threads
+        handler.handle_configuration()
+    except Exception as e:
+        logger.error(e)
+        return {"error": str(e)}, 503
+    return {"result": "videos processed successfully."}
 
 
 @app.route('/<path:path>', methods=['GET'])
@@ -119,4 +131,4 @@ if __name__ == '__main__':
 
     # Specify a hostname and port that are set as a valid redirect URI
     # for your API project in the Google API Console.
-    app.run('localhost', 8080, debug=True)
+    app.run('localhost', 5055, debug=True)
