@@ -46,6 +46,13 @@ resource "google_project_service" "enable_cloud_run_api" {
   disable_on_destroy = false
 }
 
+resource "google_project_service" "enable_sheets_api" {
+  project = data.google_client_config.current.project
+  service = "sheets.googleapis.com"
+  disable_dependent_services = true
+  disable_on_destroy = false
+}
+
 resource "google_project_service" "enable_google_drive_api" {
   project = data.google_client_config.current.project
   service = "drive.googleapis.com"
