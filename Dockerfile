@@ -10,7 +10,7 @@ RUN apk update && apk add ffmpeg-libs==4.4-r1 ffmpeg==4.4-r1
 RUN apk update && apk add build-base libffi-dev==3.3-r2
 
 # Node dependencies
-RUN apk update && apk add nodejs==14.17.3-r0 npm==7.17.0-r0
+RUN apk update && apk add nodejs==14.17.4-r0 npm==7.17.0-r0
 
 RUN mkdir -p /usr/src/app
 RUN mkdir -p /usr/src/frontend
