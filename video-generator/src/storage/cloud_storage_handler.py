@@ -53,3 +53,36 @@ class CloudStorageHandler():
         blob.upload_from_filename(output_file_path)
         self.logger.info('Uploaded preview video %s to gcs bucket %s', title, self.gcs_bucket_name)
         return f"gs://{self.gcs_bucket_name}/{title}"
+
+    def sanitize_bucket_name(self, bucket_name):
+        # Convert all letters to lowercase
+        bucket_name = bucket_name.lower()
+        # Only allow letters, numbers, dashes and underscore
+        return ''.join(char for char in bucket_name if (char.isalnum() or char == '-' or char == '_'))
+
+    def sanitize_object_name(self, string):
+        # Only allow letters, numbers, dashes, underscores, and slashes (to create directories)
+        return ''.join(char for char in string if (char.isalnum() or char == '-' or char == '_' or char == '/'))
+
+    def create_bucket_if_not_exists(self, bucket_name):
+        if not storage.Bucket(self.storage_client, bucket_name).exists():
+            bucket = self.storage_client.bucket(bucket_name)
+            bucket.storage_class = "STANDARD"
+            return self.storage_client.create_bucket(bucket, location="us")
+        else:
+            return self.storage_client.bucket(bucket_name)
+
+    def upload_to_directory(self, output_file_path, config):
+        bucket_name = self.sanitize_bucket_name(config.get('custom_dir'))
+        if not bucket_name:
+            raise ValueError('Directory name cannot be empty when calling upload_to_directory.')
+
+        bucket = self.create_bucket_if_not_exists(bucket_name)
+
+        name = self.sanitize_object_name(config.get('name', ''))
+        timestamp = output_file_path.split('/')[-1]
+        object_name = f"{name}_{timestamp}"
+        blob = bucket.blob(object_name)
+        blob.upload_from_filename(output_file_path)
+        self.logger.info('Uploaded file %s to directory %s', object_name, bucket)
+        return f"gs://{bucket}/{object_name}"
