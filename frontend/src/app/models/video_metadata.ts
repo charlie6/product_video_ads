@@ -25,6 +25,7 @@ export class VideoMetadata {
         public configs : Array<Config>,
         public description : string = '',
         public visibility : string = '',
+        public custom_dir : string = '',
         public date : string = new Date().toLocaleString('pt-BR')
         ) {}
         
