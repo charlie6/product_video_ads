@@ -53,3 +53,25 @@ class CloudStorageHandler():
         blob.upload_from_filename(output_file_path)
         self.logger.info('Uploaded preview video %s to gcs bucket %s', title, self.gcs_bucket_name)
         return f"gs://{self.gcs_bucket_name}/{title}"
+
+
+    def create_bucket_if_not_exists(self, bucket_name):
+        if not storage.Bucket(self.storage_client, bucket_name).exists():
+            bucket = self.storage_client.bucket(bucket_name)
+            bucket.storage_class = "STANDARD"
+            return self.storage_client.create_bucket(bucket, location="us")
+        else:
+            return self.storage_client.bucket(bucket_name)
+
+
+    def upload_to_directory(self, output_file_path, directory):
+        if not directory:
+            raise ValueError('Directory name cannot be empty when calling upload_to_directory.')
+
+        bucket = self.create_bucket_if_not_exists(directory)
+
+        title = output_file_path.split('/')[-1]
+        blob = bucket.blob(title)
+        blob.upload_from_filename(output_file_path)
+        self.logger.info('Uploaded file %s to directory %s', title, directory)
+        return f"gs://{directory}/{title}"
