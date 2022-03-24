@@ -172,12 +172,12 @@
 
     <!-- Allow for images to be stored in custom directory -->
     <span *ngIf="is_base_image(base)">
-      <div class="added_item" [ngClass]="{'selected_box': mode == 'single' && !youtube && custom_dir}" (click)="select_single_video_mode(custom_dir=true)">
+      <div class="added_item" [ngClass]="{'selected_box': mode == 'single' && !youtube && custom_dir}" (click)="select_single_video_mode(false, true)">
         <mat-icon aria-hidden="false" aria-label="panorama icon" title="video_label">panorama</mat-icon>
         <p>Create <b>one</b><br/>single asset <b>(Image)</b></p>
       </div>
   
-      <div class="added_item" [ngClass]="{'selected_box': mode == 'bulk' && !youtube && custom_dir}" (click)="select_bulk_video_mode(custom_dir=true)">
+      <div class="added_item" [ngClass]="{'selected_box': mode == 'bulk' && !youtube && custom_dir}" (click)="select_bulk_video_mode(false, true)">
         <mat-icon aria-hidden="false" aria-label="collections icon" title="video_library">collections</mat-icon>
         <p>Create <b>multiple</b><br/>assets in bulk <b>(Image)</b></p>
       </div>
