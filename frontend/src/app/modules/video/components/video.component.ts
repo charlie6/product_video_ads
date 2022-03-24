@@ -164,7 +164,7 @@ export class VideoComponent implements OnInit {
 
       // Create a single video
       video_metadata.name = video_metadata.name || 'Preview'
-      video_metadata.custom_dir = this.custom_dir
+      video_metadata.custom_dir = this.custom_dir_name
 
       this.add_video(
         this.facade.generate_final_configs(selected_offer_types, this.base, selected_products, this.products),
@@ -234,7 +234,7 @@ export class VideoComponent implements OnInit {
             audience_name: metadata.audience_name,
             ad_group_name: metadata.ad_group_name,
             ad_name: metadata.ad_name,
-            custom_dir: this.custom_dir
+            custom_dir: this.custom_dir_name
           })
         }
       }
