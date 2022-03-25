@@ -174,12 +174,12 @@
     <span *ngIf="is_base_image(base)">
       <div class="added_item" [ngClass]="{'selected_box': mode == 'single' && !youtube && custom_dir}" (click)="select_single_video_mode(false, true)">
         <mat-icon aria-hidden="false" aria-label="panorama icon" title="video_label">panorama</mat-icon>
-        <p>Create <b>one</b><br/>single image <b>(Cloud Storage)</b></p>
+        <p>Create <b>one</b><br/>image <b>(Cloud Storage)</b></p>
       </div>
   
       <div class="added_item" [ngClass]="{'selected_box': mode == 'bulk' && !youtube && custom_dir}" (click)="select_bulk_video_mode(false, true)">
         <mat-icon aria-hidden="false" aria-label="collections icon" title="video_library">collections</mat-icon>
-        <p>Create <b>multiple</b><br/>images in bulk <b>(Cloud Storage)</b></p>
+        <p>Create <b>multiple</b><br/>images <b>(Cloud Storage)</b></p>
       </div>
     </span>
   </div>
@@ -294,9 +294,14 @@
     </div>
 
     <div *ngIf="custom_dir" class="ads-fields">
+      <!-- Name -->
+      <mat-form-field class="example-full-width">
+        <mat-label>Name</mat-label>
+        <input [(ngModel)]="video_metadata.name" placeholder="Name" matInput>
+      </mat-form-field>
       <!-- Custom output dir -->
       <mat-form-field class="example-full-width">
-        <mat-label>Cloud Storage Bucket Name</mat-label>
+        <mat-label>Storage Bucket Name</mat-label>
         <input [(ngModel)]="custom_dir_name" placeholder="Name of storage bucket" matInput>
       </mat-form-field>
     </div>
