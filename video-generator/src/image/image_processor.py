@@ -41,7 +41,7 @@ class ImageProcessor():
       output_image = self.generate_single_image(row, config)
 
       # Uploads image to storage and retrieve the ID
-      if config.custom_dir:
+      if config['custom_dir']:
         output_id = self.cloud_storage.upload_to_directory(output_image, config.custom_dir)
       elif self.cloud_preview:
         output_id = self.cloud_storage.upload_to_preview(output_image)
