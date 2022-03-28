@@ -68,6 +68,8 @@ class EventHandler:
         # Find base file by its name
         base_file_name = base_videos.get(metadata['base_video'])
 
+        logger.info('metadata: %s' % metadata)
+
         config = {
             'name': metadata.get('name', 'Unnamed'),
             'custom_dir': metadata.get('custom_dir', ''),
@@ -79,7 +81,7 @@ class EventHandler:
         }
 
         logger.info('[Event Handler] Handling new creative with base %s' % base_file_name)
-        logger.debug('Configs: %s' % config)
+        logger.info('Configs: %s' % config)
 
         # Choose the correct processor to do the job (image or video)
         if base_file_name and base_file_name.endswith('.mp4'):

@@ -33,6 +33,7 @@ class ImageProcessor():
 
   def process_task(self, row, config, preview_only=False):
 
+    logger.info('Configs @ process_task: %s' % config)
     logger.info('[Image Processor] Starting to process row %s...', row)
 
     try:
