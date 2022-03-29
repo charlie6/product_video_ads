@@ -71,7 +71,7 @@ class CloudStorageHandler():
 
         bucket = self.create_bucket_if_not_exists(directory)
 
-        title = config.get('title', '')
+        title = config.get('Title', '')
         sanitized_title = ''.join(char for char in title if char.isalnum())
         filename = output_file_path.split('/')[-1]
         object_name = f"{sanitized_title}_{filename}"
