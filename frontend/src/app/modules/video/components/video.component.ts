@@ -157,6 +157,10 @@ export class VideoComponent implements OnInit {
     }
 
     is_all_filled() {
+      if (this.custom_dir && !this.video_metadata && !this.video_metadata.name && !this.custom_dir_name) {
+        return false
+      }
+      
       return !this.selected_offer_types.includes(undefined) && !this.selected_products.includes(undefined)
     }
 

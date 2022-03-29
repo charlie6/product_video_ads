@@ -64,14 +64,18 @@ class CloudStorageHandler():
             return self.storage_client.bucket(bucket_name)
 
 
-    def upload_to_directory(self, output_file_path, directory):
+    def upload_to_directory(self, output_file_path, config):
+        directory = config.get('custom_dir')
         if not directory:
             raise ValueError('Directory name cannot be empty when calling upload_to_directory.')
 
         bucket = self.create_bucket_if_not_exists(directory)
 
-        title = output_file_path.split('/')[-1]
-        blob = bucket.blob(title)
+        title = config.get('title', '')
+        sanitized_title = ''.join(char for char in title if char.isalnum())
+        filename = output_file_path.split('/')[-1]
+        object_name = f"{sanitized_title}_{filename}"
+        blob = bucket.blob(object_name)
         blob.upload_from_filename(output_file_path)
         self.logger.info('Uploaded file %s to directory %s', title, directory)
         return f"gs://{directory}/{title}"
