@@ -301,7 +301,7 @@
       </mat-form-field>
       <!-- Custom output dir -->
       <mat-form-field class="example-full-width">
-        <mat-label>Storage Bucket Name</mat-label>
+        <mat-label>Storage Bucket</mat-label>
         <input [(ngModel)]="custom_dir_name" placeholder="Name of storage bucket" matInput>
       </mat-form-field>
     </div>
@@ -408,6 +408,14 @@
                   <input [(ngModel)]="selected_groups.get(group.key).audience_name" placeholder="Audience Name" matInput>
                 </mat-form-field>
       
+              </div>
+
+              <div *ngIf="selected_groups.has(group.key) && custom_dir" class="ads-fields">
+                <!-- Custom output dir -->
+                <mat-form-field class="example-full-width">
+                  <mat-label>Storage Bucket</mat-label>
+                  <input [(ngModel)]="custom_dir_name" placeholder="Name of storage bucket" matInput>
+                </mat-form-field>
               </div>
 
           </section>
