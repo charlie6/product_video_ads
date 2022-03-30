@@ -150,6 +150,9 @@ export class VideoComponent implements OnInit {
 
       if (this.youtube)
         this.prepare_video_ads_metadata()
+
+      if (!this.custom_dir)
+
     }
 
     async prepare_video_ads_metadata() {
@@ -157,7 +160,8 @@ export class VideoComponent implements OnInit {
     }
 
     is_all_filled() {
-      if (this.custom_dir && ((!this.video_metadata && !this.video_metadata.name) || !this.custom_dir_name)) {
+      // Additional checks if custom_dir option is selected
+      if (this.custom_dir && !this.custom_dir_is_filled()) {
         return false
       }
 
@@ -260,11 +264,16 @@ export class VideoComponent implements OnInit {
       this._snackBar.open('Scheduled for creation (check assets section above)', 'OK', { duration: 4000 })
     }
 
+    private custom_dir_is_filled() {
+      return this.video_metadata && this.video_metadata.name && this.custom_dir_name
+    }
+
     private clear_screen_selections() {
       this.final_configs = []
       this.video_metadata = {}
       this.ads_metadata = {}
       this.base = undefined
+      this.custom_dir_name = undefined
       this.products = undefined
       this.product_sheet = undefined
       this.mode = ''
