@@ -150,9 +150,6 @@ export class VideoComponent implements OnInit {
 
       if (this.youtube)
         this.prepare_video_ads_metadata()
-
-      if (!this.custom_dir)
-
     }
 
     async prepare_video_ads_metadata() {
