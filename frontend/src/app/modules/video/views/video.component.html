@@ -428,7 +428,7 @@
 
         <br/><br/>
 
-        <button mat-stroked-button (click)="review_create_bulk()">Review Bulk</button>
+        <button mat-stroked-button [disabled]="!is_all_filled()" (click)="review_create_bulk()">Review Bulk</button>
 
         <br/><br/>
 
@@ -447,7 +447,7 @@
 
           <br/><br/>
           
-          <button mat-stroked-button [disabled]="!is_all_filled()" (click)="create_bulk()">Create Bulk</button>
+          <button mat-stroked-button (click)="create_bulk()">Create Bulk</button>
         </div>
     </div>
 </div>
