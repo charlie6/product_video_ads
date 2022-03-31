@@ -266,7 +266,8 @@ export class VideoComponent implements OnInit {
     }
 
     private custom_dir_is_filled() {
-      return this.video_metadata && this.video_metadata.name && this.custom_dir_name
+      // return this.video_metadata && this.video_metadata.name && this.custom_dir_name
+      return this.custom_dir_name
     }
 
     private clear_screen_selections() {
