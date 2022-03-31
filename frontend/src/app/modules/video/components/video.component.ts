@@ -289,9 +289,9 @@ export class VideoComponent implements OnInit {
           this.base.title,
           this.product_sheet,
           final_configs,
+          video_metadata.custom_dir,
           video_metadata.description,
-          video_metadata.visibility,
-          video_metadata.custom_dir
+          video_metadata.visibility
         ),
         new AdsMetadata(
           ads_metadata.account_id,
