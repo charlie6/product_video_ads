@@ -162,6 +162,10 @@ export class VideoComponent implements OnInit {
         return false
       }
 
+      if (this.mode == 'bulk') {
+        return true
+      }
+
       return !this.selected_offer_types.includes(undefined) && !this.selected_products.includes(undefined)
     }
 
