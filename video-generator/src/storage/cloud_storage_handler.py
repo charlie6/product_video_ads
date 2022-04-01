@@ -74,7 +74,7 @@ class CloudStorageHandler():
         if not bucket_name:
             raise ValueError('Bucket name cannot be empty when calling upload_to_directory.')
 
-        object_prefix = directory.removeprefix(bucket_name)
+        object_prefix = directory[len(bucket_name):]
         if object_prefix:
             object_prefix = object_prefix + '/'
 
