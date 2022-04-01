@@ -305,6 +305,7 @@
         <input [(ngModel)]="custom_dir_name" placeholder="Name of storage bucket" matInput>
       </mat-form-field>
     </div>
+    
     <br/><br/>
 
     <button mat-stroked-button [disabled]="!is_all_filled()" (click)="add_single_video(selected_products, selected_offer_types, video_metadata)">Create Asset</button>
@@ -414,6 +415,8 @@
 
           <br/>
 
+          <div>{{selected_groups.size}} selected</div>
+
           <div *ngIf="custom_dir" class="ads-fields">
             <!-- Custom output dir -->
             <mat-form-field class="example-full-width">
@@ -421,10 +424,6 @@
               <input [(ngModel)]="custom_dir_name" placeholder="Name of storage bucket" matInput>
             </mat-form-field>
           </div>
-
-          <br/>
-
-          <div>{{selected_groups.size}} selected</div>
 
         <br/><br/>
 

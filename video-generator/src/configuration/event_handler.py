@@ -67,7 +67,7 @@ class EventHandler:
 
         # Find base file by its name
         base_file_name = base_videos.get(metadata['base_video'])
-        
+
         config = {
             'name': metadata.get('name', 'Unnamed'),
             'custom_dir': metadata.get('custom_dir', ''),

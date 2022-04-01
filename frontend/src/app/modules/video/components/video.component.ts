@@ -157,12 +157,13 @@ export class VideoComponent implements OnInit {
     }
 
     is_all_filled() {
-      // Additional checks if custom_dir option is selected
-      if (this.custom_dir && !this.custom_dir_is_filled()) {
+      if (this.custom_dir && !this.custom_dir_name) {
+        // Make sure directory name is filled if we are using custom directory feature
         return false
       }
 
       if (this.mode == 'bulk') {
+        // Skip remaining checks if we are creating in bulk
         return true
       }
 
@@ -263,11 +264,6 @@ export class VideoComponent implements OnInit {
       this.clear_screen_selections()
 
       this._snackBar.open('Scheduled for creation (check assets section above)', 'OK', { duration: 4000 })
-    }
-
-    private custom_dir_is_filled() {
-      // return this.video_metadata && this.video_metadata.name && this.custom_dir_name
-      return this.custom_dir_name
     }
 
     private clear_screen_selections() {

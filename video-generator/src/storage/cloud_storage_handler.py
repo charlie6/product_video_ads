@@ -54,14 +54,8 @@ class CloudStorageHandler():
         self.logger.info('Uploaded preview video %s to gcs bucket %s', title, self.gcs_bucket_name)
         return f"gs://{self.gcs_bucket_name}/{title}"
 
-    def sanitize_bucket_name(self, bucket_name):
-        # Convert all letters to lowercase
-        bucket_name = bucket_name.lower()
-        # Only allow letters, numbers, dashes and underscore
-        return ''.join(char for char in bucket_name if (char.isalnum() or char == '-' or char == '_'))
-
-    def sanitize_object_name(self, string):
-        # Only allow letters, numbers, dashes, underscores, and slashes (to create directories)
+    def sanitize_string(self, string):
+        # Only allow letters, numbers, and underscore
         return ''.join(char for char in string if (char.isalnum() or char == '-' or char == '_' or char == '/'))
 
     def create_bucket_if_not_exists(self, bucket_name):
@@ -73,16 +67,24 @@ class CloudStorageHandler():
             return self.storage_client.bucket(bucket_name)
 
     def upload_to_directory(self, output_file_path, config):
-        bucket_name = self.sanitize_bucket_name(config.get('custom_dir'))
+        directory = self.sanitize_string(config.get('custom_dir')).strip('/')
+
+        # Nested directories needed to be added as prefixes to object names in gcs 
+        bucket_name = directory.split('/')[0].lower()
         if not bucket_name:
-            raise ValueError('Directory name cannot be empty when calling upload_to_directory.')
+            raise ValueError('Bucket name cannot be empty when calling upload_to_directory.')
+
+        object_prefix = directory.removeprefix(bucket_name)
+        if object_prefix:
+            object_prefix = object_prefix + '/'
 
         bucket = self.create_bucket_if_not_exists(bucket_name)
 
-        name = self.sanitize_object_name(config.get('name', ''))
-        timestamp = output_file_path.split('/')[-1]
-        object_name = f"{name}_{timestamp}"
+        name = self.sanitize_string(config.get('name', ''))
+        id = output_file_path.split('/')[-1]
+        object_name = f"{object_prefix}{name}_{id}"
+
         blob = bucket.blob(object_name)
         blob.upload_from_filename(output_file_path)
-        self.logger.info('Uploaded file %s to directory %s', object_name, bucket)
-        return f"gs://{bucket}/{object_name}"
+        self.logger.info('Uploaded object: %s to bucket: %s', object_name, bucket_name)
+        return f"gs://{bucket_name}/{object_name}"
